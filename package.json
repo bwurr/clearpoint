@@ -1,0 +1,28 @@
+{
+  "name": "clearpoint",
+  "version": "1.0.0",
+  "description": "temporary repository for technical test from Clearpoint",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bwurr/clearpoint.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bwurr/clearpoint/issues"
+  },
+  "homepage": "https://github.com/bwurr/clearpoint#readme",
+  "dependencies": {
+    "cypress": "^11.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.3"
+  }
+}
