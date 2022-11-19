@@ -44,12 +44,19 @@ However, as the system data source potentially opens in a blank state each time 
 Adjustments needed based on running locally:
 1: Localhost is no longer 3000 so had to use the port as it appears on the service locally
 
+--------------------------------------------------------
 Outcome:
 Project and test feature with tests covering the main happy path flows
 
+--------------------------------------------------------
 Further enhancements:
 1: Look to add to a pipeline that would deploy the service and run the tests on deployment
 2: If further environments are available extend the pipeline to run the tests in every environment, and create a non invasive smoke pack based on attributes to potentially run in prod
+
+--------------------------------------------------------
+Alternative Approach:
+1: Xunit tests with an http client e.g. flurl included in the project
+2: Tests can run in pipeline either in build or release
 
 
 

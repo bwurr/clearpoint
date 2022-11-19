@@ -42,9 +42,9 @@ describe('todoitem api tests', () => {
      * For an immediate solution with the async calls they are nested
      * In c# the id/description would be stored and passed to subsequent requests synchronously
      */
-     it.only('todoitems create item, get item, delete item, final get to prove 404', () =>{
-        //POST and retain the id
-        let description = TODO_ITEMS_DESC + makedesc(8);
+     it('todoitems create item, get item, update item, final get to prove the update', () =>{
+        //POST and retain the id - id should be unique every time
+        let description = TODO_ITEMS_DESC + makeDesc(8);
         cy.request({
             method: 'POST',
             url: `${TODO_ITEMS_PATH}`,
@@ -69,9 +69,7 @@ describe('todoitem api tests', () => {
                 expect(responseFromFirstGet.status).to.eq(200);
                 expect(responseFromFirstGet.body).to.have.property('description', description);
                 return result.id;
-            })          
-            
-            
+            })  
         })
         .then((id) => {
             cy.request({
@@ -100,11 +98,91 @@ describe('todoitem api tests', () => {
         })
     })
 
-    //Anything else at this point?
-    //400 POST
-    //400 PUT
-    //409
-    function makedesc(length) {
+    /**
+     * Bad request response expected when posting invalid body
+     */    
+    it('todoitems single post bad request returns 400', () =>{
+        cy.request({
+            method: 'POST',
+            url: `${TODO_ITEMS_PATH}`,
+            headers: {contentType: 'application/json'},
+            failOnStatusCode: false,
+            body: {
+            }
+        }).then((response) => {
+            expect(response.status).to.eq(400);
+        })
+    })
+
+    /**
+     * Bad request response expected when PUTting an invalid body
+     */    
+    it('todoitems single put bad request returns 400', () =>{
+        let description = TODO_ITEMS_DESC + makeDesc(8);
+        cy.request({
+            method: 'POST',
+            url: `${TODO_ITEMS_PATH}`,
+            headers: {contentType: 'application/json'},
+            body: {
+                'description': description
+            }
+        }).then((response) => {
+            expect(response.status).to.eq(201);
+            expect(response.body).length.to.gt(1);
+            return response.body
+        }).then((id) => {
+            cy.request({
+                method: 'PUT',
+                url: `${TODO_ITEMS_PATH}/${id}`,
+                headers: {contentType: 'application/json'},
+                failOnStatusCode: false,
+                body: {
+                    'description': TODO_ITEMS_UPDATED,
+                    'isCompleted': true
+                }
+            }).then((response) => {
+                expect(response.status).to.eq(400);
+            })
+        })
+    })
+    
+    /**
+     * Conflict response expected when posting a second item with the same description
+     */    
+     it('todoitems second post with the same description returns 409', () =>{
+        let description = TODO_ITEMS_DESC + makeDesc(8);
+        cy.request({
+            method: 'POST',
+            url: `${TODO_ITEMS_PATH}`,
+            headers: {contentType: 'application/json'},
+            body: {
+                'description': description
+            }
+        }).then((response) => {
+            expect(response.status).to.eq(201);
+            expect(response.body).length.to.gt(1);
+        }).then(() => {
+            cy.request({
+                method: 'POST',
+                url: `${TODO_ITEMS_PATH}`,
+                headers: {contentType: 'application/json'},
+                failOnStatusCode: false,
+                body: {
+                    'description': description
+                }
+            }).then((response) => {
+                expect(response.status).to.eq(409);
+            })
+        })
+    })
+
+
+    /**
+     * makeDesc - returns a random string the length specified
+     * @param length 
+     * @returns the string requested
+     */
+    function makeDesc(length) {
         var result           = '';
         var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         var charactersLength = characters.length;
