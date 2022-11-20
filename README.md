@@ -26,6 +26,8 @@ Update: Have tried again on Saturday morning and unfortunately still blocked
 
 3: Have been able to open the backend project using visual studio via iis express and can interact with the swagger page and the service directly
 
+4: The port for the service running locally is different to that in the pdf provided by clearpoint. This can be configured in the baseUrl property found in cypress.config.ts
+
 --------------------------------------------------------
 Test Process
 1: Using cypress api create the base project, add to git, create the first test file
